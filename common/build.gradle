@@ -30,6 +30,10 @@ def windows(arch) {
     [triple: "${arch}-pc-windows-msvc", arch: arch, os: "windows", ext: "dll", lib: false]
 }
 
+def android(arch) {
+    [triple: "${arch}-linux-android", arch: arch, os: "android", ext: "so", lib: true]
+}
+
 def supportedTargets = [
         mac("x86_64"),
         mac("aarch64"),
@@ -38,6 +42,7 @@ def supportedTargets = [
         windows("x86_64"),
         windows("aarch64"),
         freebsd("x86_64"),
+        android("aarch64")
         // freebsd("aarch64"),
 ]
 def pinnedRustVersion = 'nightly-2026-01-29'
@@ -111,6 +116,9 @@ def commandLineForTarget(target) {
         // support meme platforms, this does nothing by default because the target is disabled
     } else if (target.triple == 'aarch64-unknown-freebsd') {
         [project.ext.zigbuildCargo, 'zigbuild', '-Z', 'build-std', '--target', target.triple].flatten()
+        // support specifically android because you need bionic binaries to run on android.
+    } else if (target.triple.contains('android')) {
+        [project.ext.zigbuildCargo, 'cargo', 'build', '--target', target.triple].flatten()
     } else {
         [project.ext.zigbuildCargo, 'zigbuild', '--target', target.triple].flatten()
     }
