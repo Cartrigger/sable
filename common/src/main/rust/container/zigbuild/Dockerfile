@@ -23,4 +23,10 @@ ENV PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
 ENV CC_aarch64_linux_android=aarch64-linux-android21-clang
 ENV CXX_aarch64_linux_android=aarch64-linux-android21-clang++
 
+# Help rustc find NDK system libs when linking for aarch64-android
+ENV ANDROID_API=21
+ENV ANDROID_SYSROOT=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot
+ENV ANDROID_LIBDIR=$ANDROID_SYSROOT/usr/lib/aarch64-linux-android/$ANDROID_API
+ENV CARGO_TARGET_AARCH64_LINUX_ANDROID_RUSTFLAGS=-Lnative=$ANDROID_LIBDIR
+
 WORKDIR /
